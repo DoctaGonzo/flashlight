@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
 	private final Context context = this;
 	private Camera camera;
 	private ToggleButton flashtoggle;
+	private PackageManager pm = context.getPackageManager();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +32,8 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		flashtoggle = (ToggleButton) findViewById(R.id.flashtoggle);
-		final PackageManager pm = context.getPackageManager();
 
-		if (!pm.hasSystemFeature(pm.FEATURE_CAMERA)) {
+		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
 			AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 			alertDialog.setTitle("No Camera");
 			alertDialog.setMessage("Your device does not support camera.");
@@ -50,8 +50,32 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-	public void onFlashToggle(){
-		
+	public void onFlashToggle(View view){
+		if(!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)){
+			AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+			alertDialog.setTitle("No Flash");
+			alertDialog.setMessage("Your device does not support flash.");
+			alertDialog.setButton(RESULT_OK, "Ok",
+					new DialogInterface.OnClickListener() {
+						public void onClick(final DialogInterface dialog,
+								final int which) {
+							Log.e("err", "Your device does not support flash.");
+						}
+					});
+			alertDialog.show();
+		} else {
+			final Parameters parameters = camera.getParameters();
+			boolean isFlashOn = ((ToggleButton) view).isChecked();
+			if(!isFlashOn){
+				parameters.setFlashMode(Parameters.FLASH_MODE_OFF);
+				camera.setParameters(parameters);
+				camera.stopPreview();
+			} else {
+				parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);
+				camera.setParameters(parameters);
+				camera.startPreview();
+			}
+		}
 	}
 	
 	@Override
