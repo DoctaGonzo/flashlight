@@ -6,10 +6,16 @@
     tools:context="fi.tomi.flashlight.MainActivity"
     tools:ignore="MergeRootFrame" >
 
-    <ToggleButton
+    <Switch
         android:id="@+id/flashtoggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:checked="false"
+        android:textOn=""
+        android:textOff=""
+        android:thumbTextPadding="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:onClick="onFlashToggle" />
 
 </RelativeLayout>
