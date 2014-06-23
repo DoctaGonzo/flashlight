@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
 	private final Context context = this;
 	private Camera camera;
 	private ToggleButton flashtoggle;
-	private PackageManager pm = context.getPackageManager();
+	private PackageManager pm;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		flashtoggle = (ToggleButton) findViewById(R.id.flashtoggle);
-
+		pm = context.getPackageManager();
 		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
 			AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 			alertDialog.setTitle("No Camera");
@@ -49,9 +49,10 @@ public class MainActivity extends Activity {
 			camera = Camera.open();
 		}
 	}
-	
-	public void onFlashToggle(View view){
-		if(!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)){
+
+	public void onFlashToggle(View view) {
+		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+			flashtoggle.setChecked(false);
 			AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 			alertDialog.setTitle("No Flash");
 			alertDialog.setMessage("Your device does not support flash.");
@@ -66,7 +67,7 @@ public class MainActivity extends Activity {
 		} else {
 			final Parameters parameters = camera.getParameters();
 			boolean isFlashOn = ((ToggleButton) view).isChecked();
-			if(!isFlashOn){
+			if (!isFlashOn) {
 				parameters.setFlashMode(Parameters.FLASH_MODE_OFF);
 				camera.setParameters(parameters);
 				camera.stopPreview();
@@ -77,7 +78,7 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
-	
+
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -86,20 +87,23 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	/*
-	 * @Override public boolean onCreateOptionsMenu(Menu menu) {
-	 * 
-	 * // Inflate the menu; this adds items to the action bar if it is present.
-	 * getMenuInflater().inflate(R.menu.main, menu); return true; }
-	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
 
-	/*
-	 * @Override public boolean onOptionsItemSelected(MenuItem item) { // Handle
-	 * action bar item clicks here. The action bar will // automatically handle
-	 * clicks on the Home/Up button, so long // as you specify a parent activity
-	 * in AndroidManifest.xml. int id = item.getItemId(); if (id ==
-	 * R.id.action_settings) { return true; } return
-	 * super.onOptionsItemSelected(item); }
-	 */
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 }
